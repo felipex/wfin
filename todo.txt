@@ -1,0 +1,22 @@
+
+*** Carnês para impressão
+
+*** Impressão de contrato
+
+*** Função matrícula
+
+*** Movimentação financeira
+
+* Mensagens por app (próprio ou não)
+
+----------------------------------------------
+Trocar entregou carnê por formade pagamento?
+
+Mostrar o código do contrato.  
+
+Forma de pagamento
+  Acrescentar boleto e cartão
+  
+Gerar as prestações anteriores à data do contrato como Não Estudou
+
+Novo status: quitado

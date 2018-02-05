@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+ {% block extrahead %}
+ <style>
+ td, th {
+    text-align: right;
+ }
+ 
+ td.total {
+    font-weight: bold;
+ }
+ </style>
+ {% endblock %}
+
+{% block content %}
+<h6>.</h6>
+<div class="col-lg-2"></div>
+<div class="panel panel-primary col-lg-12">
+  <!-- Default panel contents -->
+  
+  <div class="panel-heading">Faturamento até {{ data.strftime("%d-%m-%Y") }} </div>
+  <div class="panel-body">
+  
+<br />
+    
+  <!-- Table -->
+  <table class="table table-striped" >
+  <tr ><th></th><th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
+                    <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th><th>Total</th></tr>
+
+<tr><td style="vertical-align: middle;"><strong>Previsão</strong></td>
+        {% for p in previsao %}
+<td style="vertical-align: middle;">
+{{formatfloat(p)}}
+</td>
+        {% endfor %}
+<td class="total">{{ formatfloat(total['previsao']) }}</td>
+</tr>
+<tr><td style="vertical-align: middle;"><strong>Recebido</strong></td>
+        {% for p in recebido %}
+<td style="vertical-align: middle;">
+{{formatfloat(p)}}
+</td>
+        {% endfor %}
+<td class="total">{{ formatfloat(total['recebido']) }}</td>
+</tr>
+
+<tr><td style="vertical-align: middle;"><strong>Em atraso</strong></td>
+        {% for p in em_atraso %}
+<td style="vertical-align: middle;">
+{{formatfloat(p)}}
+</td>
+        {% endfor %}
+<td class="total">{{ formatfloat(total['em_atraso']) }}</td>
+</tr>
+
+  </table>
+</div>
+</div>
+
+{% endblock %}
+

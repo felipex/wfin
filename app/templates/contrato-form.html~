@@ -1,0 +1,104 @@
+{% extends "base_site.html" %}
+
+{% block title %} Contratos {% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+{% endblock stylesheets %}
+
+
+{% block content %}
+<div class="col-lg-9" style="margin-left:250px; min-height: 550px;">
+  <!-- Default panel contents -->
+  
+  <h3>Contratos </h3>
+  <div class="">
+ 
+<form action="" method="POST">
+{{ form.csrf_token }}
+<input type="hidden" name="id" value="{{obj.id}}">
+<div class="row">
+    <div class="col-sm-5">
+        <div class="form-group">
+        <label>{{ form.aluno.label }}</label> {{ form.aluno(size=50, placeholder="Nome do aluno",  value=obj.aluno, class="form-control") }}
+        </div>
+    </div>
+
+    <div class="col-sm-5">
+        <div class="form-group">
+        <label>{{ form.responsavel.label }}</label>
+            <select class="form-control" id="responsavel_id" name="responsavel_id" >
+            {% for r in resps %} 
+                <option value="{{r.id}}" {% if obj.responsavel_id == r.id %}selected{% endif %}>{{r.nome}} - {{r.cpf}}</option>
+            {% endfor %}   
+            </select> 
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.parentesco.label }}</label> {{ form.parentesco(size=50, value=obj.parentesco, class="form-control") }}
+        </div>
+    </div>
+
+</div>
+
+
+<div class="row">
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.serie.label }}</label> {{ form.serie(size=50, value=obj.serie, class="form-control") }}
+        </div>
+    </div>
+
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.ano.label }}</label> {{ form.ano(size=50, value=obj.ano, class="form-control") }}
+        </div>
+    </div>
+    
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.data.label }}</label> {{ form.data(size=50, value=data, class="form-control") }}
+        </div>
+    </div>
+    
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.vencimento.label }}</label> {{ form.vencimento(size=50, value=obj.vencimento, class="form-control") }}
+        </div>
+    </div>
+    
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.carnet_entregue.label }}</label> <input class="form-control" id="carnet_entregue" name="carnet_entregue" type="checkbox"  {% if obj.carnet_entregue %}checked{% endif %}>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>Valor</label> <input class="form-control" id="valor" name="valor" size="50" type="text" value="100,00">
+        </div>
+    </div>
+    
+       
+</div><!-- Row-->
+<div class="row">
+
+<div class="col-sm-12">
+    <div class="form-group">
+    <label>{{ form.anotacoes.label }}</label><textarea class="form-control" id="anotacoes" name="anotacoes" >{{obj.anotacoes}} </textarea>
+    </div>
+</div>
+        
+</div>
+
+<button type="submit" class="btn btn-primary">Gravar </button>
+<button type="button" class="btn btn-danger" onclick="javascript:window.location='/contrato/list'">Cancela </button>
+</form>
+
+
+</div>
+</div>
+
+{% endblock %}
+

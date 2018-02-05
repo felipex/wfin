@@ -1,0 +1,98 @@
+<style>
+
+@page {
+  color: green;
+}
+
+page {
+  font-family: Helvetica, Arial;    
+}
+td {
+ border-radius: 5px;
+}
+
+page {
+  background: #ffffff;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 0.5cm;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+
+page[size="A4"] {  
+  width: 21cm;
+  height: 29.7cm; 
+}
+
+td.header {
+  display: table-cell; 
+  vertical-align: middle; 
+  text-align: center; 
+  background-color: #000055; 
+  color: white;
+  padding-top: 0.5cm;
+}
+
+table {
+  margin-top: 0.5cm;
+}
+
+@media print {
+td.header {
+  display: table-cell; 
+  vertical-align: middle; 
+  text-align: center; 
+  background-color: #000055; 
+  color: white;
+  padding-top: 0.5cm;
+}
+
+}
+</style>
+
+<page size="A4">
+{% for c in prests %}
+<table border="1">
+<tr>
+<td class ="header" style="width: 8cm;"><h5>ESPAÇO EDUCATIVO</h5>
+<h5>Centro de Educação Escolar</h5>
+</td>
+<td class ="header" style="width: 20cm;" colspan="2"><h5>ESPAÇO EDUCATIVO</h5>
+<span style="height: 10em;">Centro de Educação Escolar</span>
+</td>
+</tr>
+<tr> 
+<td><small>Aluno:</small>
+<br/>
+<strong>{{ obj.aluno }}</strong>
+</td>
+<td colspan="2"><small>Aluno:</small><br/>
+<strong>{{ obj.aluno }}</strong></td>
+</tr>
+<tr>
+<td style="height: 0.8cm"><small style="display: block; vertical-align: top">Multa/Mora: 5%/0,50 </small>
+</br>
+R$
+</td>
+<td style=""><small style="display: block; vertical-align: top">Valor:</small></br> R$ {{c.valor}} </td><td> <small style="display: block; vertical-align: top">Multa/Mora: 5%/0,50 </small>
+</br>R$</td>
+</tr>
+<tr>
+<td style="" >Valor: R$ {{c.valor}}
+<br/>
+Valor Pago: R$
+</td><td>Valor pago</td><td>Vencimento</td>
+</tr>
+<tr>
+<td style="">Vencimento: {{c.vencimento.strftime("%d-%m-%Y")}}</td><td colspan="2"></td>
+</tr>
+</table>
+<hr style="margin-top: 0; margin-bottom: 0; color: black" />
+
+{% if c.mes % 4 == 0%}
+</page>
+<page size="A4">
+{% endif %}
+{% endfor %}
+</page>
+

@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>.</h3>
+<div class="col-lg-2"></div>
+<div class="panel panel-primary col-lg-8">
+  <!-- Default panel contents -->
+  
+  <div class="panel-heading">Responsável </div>
+  <div class="panel-body">
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+   <div class="alert alert-success" role="alert">
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+{% endwith %}
+  
+<form class="navbar-form navbar-left" role="search" action="" method="GET">
+     
+  <div class="form-group">
+    
+<div class="col-lg-6">
+    <div class="input-group">
+      <input type="text" name="busca" id="busca" class="form-control" style="width:12cm" placeholder="texto para pesquisa">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button">Pesquisar</button>
+        <button class="btn btn-basic" type="button" onclick="javascript:window.location='/responsavel/list'">Todos</button>
+       <button class="btn btn-success" type="button" onclick="javascript:window.location='/responsavel/add'">Novo</button>
+       </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->  
+  </div>
+</form>
+<br />
+<br />
+
+
+  <!-- Table -->
+  <table class="table table-striped">
+  <tr><th>Nome</th><th>CPF</th></tr>
+    {% for r in rr %}
+<tr><td><a href="/responsavel/edit/{{r.id}}">{{r.nome}}</a></td><td>{{r.cpf}}</td></tr>
+{% endfor %}
+
+  </table>
+</div>
+</div>
+
+{% endblock %}
+

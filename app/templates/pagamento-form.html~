@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="col-lg-9" style="margin-left:250px; min-height: 550px;">
+  <!-- Default panel contents -->
+  
+  <h3>Pagamento </h3>
+  <div class="">
+
+<form action="" method="POST">
+{{ form.csrf_token }}
+<input type="hidden" name="id" value="{{obj.id}}">
+<div class="row">
+    <div class="col-sm-3">
+        <div class="form-group">
+        <label>{{ form.mes.label }}</label> <h4 style="background-color: gray; color:white; padding: 2mm; margin-top:0; text-align: center"> <strong> {{obj.messtr()}}</strong></h4>
+        </div>
+    </div>
+    <div class="col-sm-3">
+        <div class="form-group">
+        <label>{{ form.vencimento.label }}</label> {{form.vencimento(size=15, value=obj.vencimento, class="form-control", disabled='disabled')}}
+        <!--
+<div class="input-group date">
+  <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+</div>
+-->
+        </div>
+    </div>
+
+
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.valor.label }}</label> {{ form.valor(size=15, value=obj.valor, class="form-control", disabled='disabled') }}
+        </div>
+    </div>
+
+
+</div>
+
+<div class="row">
+   
+    <div class="col-sm-3">
+        <div class="form-group">
+        <label>{{ form.data_pgto.label }}</label> {{ form.data_pgto(size=15, value=data_de_pgto, class="form-control") }}
+        </div>
+    </div>
+    
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.valor_pago.label }}</label> {{ form.valor_pago(size=15, value=obj.valor, class="form-control") }}
+        </div>
+    </div>
+    
+    <div class="col-sm-3">
+        <div class="form-group">
+         <label>Forma de pgto</label>
+            <select class="form-control" id="forma_de_pgto" name="forma_de_pgto" >
+                <option value="E" {% if obj.forma_de_pgto=='E' %}selected{% endif %}>Espécie</option>
+                <option value="C" {% if obj.forma_de_pgto=='C' %}selected{% endif %}>Cheque</option>
+           
+            </select>          
+        </div>
+    </div>
+    
+</div>
+
+<div class="row">
+    
+    <div class="col-sm-3">
+        <div class="form-group">
+        <label>{{ form.cheque_numero.label }}</label> {{ form.cheque_numero(size=15, class="form-control") }}
+        </div>
+    </div>
+    
+    <div class="col-sm-2">
+        <div class="form-group">
+        <label>{{ form.cheque_data.label }}</label> {{ form.cheque_data(size=15, class="form-control") }}
+        </div>
+    </div>
+        
+</div>
+
+<button type="submit" class="btn btn-primary">Gravar </button>
+<button type="button" class="btn btn-danger" onclick="javascript:window.location='/pagamentos/list/{{obj.contrato_id}}'">Cancela </button>
+</form>
+
+
+</div>
+</div>
+
+{% endblock %}
+
+{% block final %}
+<script>
+$('.input-group.date').datepicker({
+    language: "pt-BR",
+    autoclose: true,
+    todayHighlight: true});
+</script>
+{% endblock %}
+
+

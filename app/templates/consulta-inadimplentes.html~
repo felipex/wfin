@@ -1,0 +1,63 @@
+{% extends "base_site.html" %}
+
+{% block title %} Inadimplentes {% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+ <style>
+ td, th {
+    text-align: right;
+ }
+ 
+ td.total {
+    font-weight: bold;
+ }
+ </style>
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="col-lg-9" style="margin-left:250px; min-height: 550px;">
+  <!-- Default panel contents -->
+  
+  <h3>Inadimplentes</h3>
+  <div class="">
+  
+<br />
+    
+  <!-- Table -->
+  <table class="table table-striped">
+  <tr><th style="text-align: left;">Aluno</th><th>Série</th> <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
+                                   <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr>
+    {% for c in lista %}
+<tr><td style="vertical-align: middle; text-align: left;"><p>
+<a href="/prestacao/list/{{c.id}}" target="_blank">{{c.aluno}}</a>
+<!--/
+<a href="/prestacao/list/{{c.id}}" onclick="window.open('/prestacao/list/{{c.id}}', 'newwindow', 'width=700,height=250'); ">{{c.aluno}}</a>-->
+</p></td><td style="vertical-align: middle;">{{c.serie}}</td>
+
+        {% for p in c.prestacoes() %}
+<td style="vertical-align: middle;">
+{% if p.em_atraso() %}
+  {{formatfloat(p.valor)}}
+{%endif%}
+
+</td>
+        {% endfor %}
+</tr>
+
+{% endfor %}
+<tr>
+    <td></td><td style="text-align: right"><strong>Total</strong></td>
+    {% for t in totais %}
+        {% if t > 0 %} 
+        <td><strong>{{formatfloat(t)}}</strong></td>
+        {% endif %}
+    {% endfor %} 
+</tr>
+
+  </table>
+</div>
+</div>
+
+{% endblock %}
+

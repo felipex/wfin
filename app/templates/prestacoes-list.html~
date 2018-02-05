@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h6>.</h6>
+<div class="col-lg-2"></div>
+<div class="panel panel-primary col-lg-12">
+  <!-- Default panel contents -->
+  
+  <div class="panel-heading">Prestações </div>
+  <div class="panel-body">
+  
+<form class="navbar-form navbar-left" role="search" action="" method="GET">
+
+  <!-- Table -->
+  <table class="table table-striped">
+  <tr><th>Situação</th><th>Mês</th><th>Valor</th><th>Valor pago</th></tr>
+    {% for c in lista %}
+<tr><td style="vertical-align: middle;"><p><a href="/contrato/edit/{{c.id}}">{{c.status}}</a>
+<br />({{c.responsavel().nome}})
+</p></td><td style="vertical-align: middle;">{{c.serie}}</td>
+<td style="vertical-align: middle;">
+<a href="/contrato/edit/{{c.id}}"><img src="{{url_for('static', filename='img/edit-24.png')}}" title="Cadastro"></a>
+&ensp;
+<a href="/financeiro/{{c.id}}">
+<img src="{{url_for('static', filename='img/wallet-24.png')}}" title="Financeiro">
+</a>
+&ensp;
+<a href="/impressao/{{c.id}}"><img src="{{url_for('static', filename='img/printer-24.png')}}" title="Impressão"></a></td></tr>
+{% endfor %}
+
+  </table>
+</div>
+</div>
+
+{% endblock %}
+

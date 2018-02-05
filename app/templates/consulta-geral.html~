@@ -1,0 +1,75 @@
+{% extends "base_site.html" %}
+
+{% block title %} Dashboard 1 {% endblock title %}
+
+{% block stylesheets %}
+  {{ super() }}
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="col-lg-9" style="margin-left:250px; min-height: 550px;">
+  <!-- Default panel contents -->
+  
+  <h3>Consulta Geral</h3>
+  <div class="">
+  
+<form class="navbar-form navbar-left" role="search" action="" method="GET">
+     
+  <div class="form-group">
+    
+<div class="col-lg-6">
+    <div class="input-group">
+      <input type="text" name="busca" id="busca" class="form-control" style="width:15cm" placeholder="texto para pesquisa">
+      <span class="input-group-btn">
+        <button class="btn btn-primary" type="button">Pesquisar</button>
+        <button class="btn btn-basic" type="button" onclick="javascript:window.location='/consulta/geral'">Todos</button>
+      </span>
+    </div><!-- /input-group -->
+  </div><!-- /.col-lg-6 -->  
+  </div>
+</form>
+<br />
+<br />
+    
+  <!-- Table -->
+  <table class="table table-striped">
+  <tr><th>Aluno</th><th>Série</th> <th>Jan</th><th>Fev</th><th>Mar</th><th>Abr</th><th>Mai</th><th>Jun</th>
+                                   <th>Jul</th><th>Ago</th><th>Set</th><th>Out</th><th>Nov</th><th>Dez</th></tr>
+    {% for c in lista %}
+<tr><td style="vertical-align: middle;"><p><a href="/contrato/edit/{{c.id}}">{{c.aluno}}</a>
+</p></td><td style="vertical-align: middle;">{{c.serie}}</td>
+
+        {% for p in c.prestacoes() %}
+<td style="vertical-align: middle;">
+{% if p.status == 'A' %}
+    {% if p.em_atraso() %}
+        <img src="{{url_for('static', filename='img/atrasada.png')}}" title="Em Atraso">
+    {% else %}
+        <img src="{{url_for('static', filename='img/aberta.png')}}" title="Aberta">
+    {%endif%}
+{%endif%}
+
+{% if p.status == 'P' %}
+<img src="{{url_for('static', filename='img/paga.png')}}" title="Paga">
+{%endif%}
+
+{% if p.status == 'D' %}
+<img src="{{url_for('static', filename='img/desistente.png')}}" title="Desistente">
+{%endif%}
+
+{% if p.status == 'N' %}
+<img src="{{url_for('static', filename='img/naoestudou.png')}}" title="Não estudou">
+{%endif%}
+</td>
+        {% endfor %}
+
+</tr>
+
+{% endfor %}
+
+  </table>
+</div>
+</div>
+
+{% endblock %}
+

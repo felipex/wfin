@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<h3>.</h3>
+<div class="col-sm-2"></div>
+<div class="panel panel-primary col-sm-8">
+  <!-- Default panel contents -->
+  
+  <div class="panel-heading">Responsável </div>
+  <div class="panel-body">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+   <div class="alert alert-success" role="alert">
+    <ul class=flashes>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+    </div>
+  {% endif %}
+{% endwith %}
+  
+<form action="" method="POST">
+{{ form.csrf_token }}
+<input type="hidden" name="id" value="{{r.id}}">
+
+<div class="form-group">
+<label>{{ form.nome.label }}</label> {{ form.nome(size=50, placeholder="Nome do responsável",  value=r.nome, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.cpf.label }}</label> {{ form.cpf(size=50, value=r.cpf, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.rg.label }}</label> {{ form.rg(size=50, value=r.rg, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.telefone.label }}</label> {{ form.telefone(size=50, value=r.telefone, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.email.label }}</label> {{ form.email(size=50, value=r.email, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.endereco.label }}</label> {{ form.endereco(size=50, value=r.endereco, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.bairro.label }}</label> {{ form.bairro(size=50, value=r.bairro, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.cidade.label }}</label> {{ form.cidade(size=50, value=r.cidade, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.uf.label }}</label> {{ form.uf(size=50, value=r.uf, class="form-control") }}
+</div>
+
+<div class="form-group">
+<label>{{ form.cep.label }}</label> {{ form.cep(size=50, value=r.cep, class="form-control") }}
+</div>
+
+
+<button type="submit" class="btn btn-primary">Gravar </button>
+<button type="button" class="btn btn-danger" onclick="javascript:window.location='/responsavel/list'">Cancela </button>
+</form>
+
+
+</div>
+</div>
+
+{% endblock %}
+
