@@ -65,7 +65,9 @@
             <select class="form-control" id="forma_de_pgto" name="forma_de_pgto" >
                 <option value="E" {% if obj.forma_de_pgto=='E' %}selected{% endif %}>Espécie</option>
                 <option value="C" {% if obj.forma_de_pgto=='C' %}selected{% endif %}>Cheque</option>
-           
+                <option value="B" {% if obj.forma_de_pgto=='B' %}selected{% endif %}>Boleto</option>
+                <option value="T" {% if obj.forma_de_pgto=='T' %}selected{% endif %}>Cartão</option>
+         
             </select>          
         </div>
     </div>

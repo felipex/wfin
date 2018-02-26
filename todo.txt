@@ -12,11 +12,16 @@
 ----------------------------------------------
 Trocar entregou carnê por formade pagamento?
 
-Mostrar o código do contrato.  
+OK Mostrar o código do contrato.  
 
-Forma de pagamento
+OK Forma de pagamento
   Acrescentar boleto e cartão
   
-Gerar as prestações anteriores à data do contrato como Não Estudou
+OK  Gerar as prestações anteriores à data do contrato como Não Estudou
 
-Novo status: quitado
+
+Fazer backup
+
+Senha
+
+

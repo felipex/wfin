@@ -38,7 +38,7 @@
   <table class="table table-striped">
   <tr><th>Aluno (Responsável)</th><th>Série</th><th></th></tr>
     {% for c in lista %}
-<tr><td style="vertical-align: middle;"><p><a href="/contrato/edit/{{c.id}}">{{c.aluno}}</a>
+<tr><td style="vertical-align: middle;"><p><a href="/contrato/edit/{{c.id}}"> {{c.numero()}} - {{c.aluno}}</a>
 <br />({{c.parentesco}} : {{c.responsavel().nome}})
 </p></td><td style="vertical-align: middle;">{{c.serie}}</td>
 <td style="vertical-align: middle;">

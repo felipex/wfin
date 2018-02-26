@@ -1,6 +1,6 @@
 import datetime
 from datetime import date
-from flask import render_template, request, redirect, url_for, flash, session
+from flask import render_template, request, redirect, url_for, flash, session, abort, send_from_directory
 from app import app, db
 from app.models import Responsavel, Contrato, Prestacao
 from app.forms import RespForm, ContratoForm, PrestacaoForm, PagamentoForm
@@ -18,6 +18,17 @@ def form_to_resp(form, resp):
     resp.uf = form["uf"]
     resp.cep = form["cep"]
 
+def verifica_login():
+    if session['logged_in']:
+        return True
+    else:
+        abort(401)
+
+@app.errorhandler(401)
+def nao_autorizado(e):
+    return redirect(url_for("do_login"))
+    
+    
 @app.route('/login', methods=['GET', 'POST'])
 def do_login():
  
@@ -25,11 +36,11 @@ def do_login():
         POST_USERNAME = str(request.form['username'])
         POST_PASSWORD = str(request.form['password'])
      
-        if (POST_USERNAME == 'admin') and (POST_PASSWORD == 'admin'):
+        if (POST_USERNAME == 'admin') and (POST_PASSWORD == 'wfin2018'):
             session['logged_in'] = True
             session['username'] = POST_USERNAME 
         else:
-            flash('wrong password!')
+            flash('Usuário ou senha incorretos!')
         return index()
     else:
         return render_template("login-form.html")
@@ -38,6 +49,7 @@ def do_login():
 def authenticate(func):
     def wrapper(*args, **kwargs):
         try:
+            print(session['logged_in'])
             if session['logged_in']: 
                 return func(*args, **kwargs)
             else:
@@ -52,24 +64,25 @@ def authenticate(func):
 def logout():
     session['logged_in'] = False
     session['username'] = ''
-    return redirect("/")
+    return redirect(url_for("do_login"))
 
         
 @app.route("/", methods=['GET'])
 #@authenticate
 def index():
+    verifica_login()
     return render_template("index.html")
 
 
 @app.route("/consultas", methods=['GET'])
-#@authenticate
 def consultas():
+    verifica_login()
     return render_template("consultas.html")
 
 
 @app.route("/consulta/geral", methods=['GET'])
-#@authenticate
 def consulta_geral():
+    verifica_login()
     busca = request.args.get("busca", default="")
     lista = Contrato.filter(busca) 
     return render_template("consulta-geral.html", lista=lista)
@@ -77,6 +90,7 @@ def consulta_geral():
 
 @app.route("/consulta/inadimplentes", methods=['GET'])
 def consulta_inadimplentes():
+    verifica_login()
     lista = Contrato.inadimplentes() 
     totais = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
     for l in lista:
@@ -87,6 +101,7 @@ def consulta_inadimplentes():
     
 @app.route("/consulta/faturamento", methods=['GET'])
 def consulta_faturamento():
+    verifica_login()
     previsao, recebido, em_atraso = Prestacao.faturamento(2018) 
     total = {
         'previsao': sum(previsao),
@@ -98,6 +113,7 @@ def consulta_faturamento():
 
 @app.route("/consulta/chequepre", methods=['GET'])
 def chequepre():
+    verifica_login()
     today = date.today()
     mesi = today.replace(day=1)
     mesf = mesi.replace(month=mesi.month+1) - datetime.timedelta(days=1)
@@ -110,6 +126,7 @@ def chequepre():
 
 @app.route("/responsavel/list", methods=['GET'])
 def responsavel_list():
+    verifica_login()
     busca = request.args.get("busca", default="")
     rr = db.session.query(Responsavel).filter(Responsavel.nome.like("%"+busca+"%"))
     return render_template("responsavel-list.html", rr=rr)
@@ -117,6 +134,7 @@ def responsavel_list():
 
 @app.route("/responsavel/edit/<int:rid>", methods=['GET', 'POST'])
 def responsavel_edit(rid=0):
+    verifica_login()
     r = Responsavel.query.get(rid)
     if request.method == 'POST':                 
         form_to_resp(request.form, r)
@@ -134,6 +152,7 @@ def responsavel_edit(rid=0):
 
 @app.route("/responsavel/add", methods=['GET', 'POST'])
 def responsavel_add():
+    verifica_login()
     r = Responsavel('','','');
     if request.method == 'POST':
         form_to_resp(request.form, r)
@@ -153,17 +172,18 @@ def responsavel_add():
 #########################################
 @app.route("/contrato/list", methods=['GET'])
 def contrato_list():
+    verifica_login()
     busca = request.args.get("busca", default="")
     lista = Contrato.filter(busca) #db.session.query(Contrato).filter(Contrato.aluno.like("%"+busca+"%"))
     return render_template("contrato-list.html", lista=lista)
     
 def strtodate(s):
-    ano, mes, dia = s.split('-')
+    ano, mes, dia = s.split('/')
     return date(int(dia), int(mes), int(ano))
 
     
 def datetostr(date):
-    return date.strftime('%d-%m-%Y')
+    return date.strftime('%d/%m/%Y')
 
 
 def str_to_float(svalor):
@@ -178,13 +198,9 @@ def form_to_contrato(form, obj):
     obj.ano = form['ano']
     obj.vencimento = form['vencimento']
     obj.data = strtodate(form['data'])
+    obj.forma_de_pgto = form['forma_de_pgto']
     obj.valor = str_to_float(form['valor'])
     obj.anotacoes = form['anotacoes']
-    print(" * * * * * * * * * * * * * * ")
-    print(form['anotacoes'])
-    print(" * * * * * * * * * * * * * * ")
-    print(obj.anotacoes)
-    print(" * * * * * * * * * * * * * * ")
     
     if form.get('carnet_entregue', False) == 'on':
         obj.carnet_entregue = True 
@@ -202,6 +218,7 @@ def display_data(data):
 
 @app.route("/contrato/edit/<int:cid>", methods=['GET', 'POST'])
 def contrato_edit(cid=0):
+    verifica_login()
     obj = Contrato.query.get(cid)
     resps = Responsavel.query.order_by('nome')
     
@@ -214,15 +231,13 @@ def contrato_edit(cid=0):
     else:
         form = ContratoForm()
         data = display_data(obj.data)      
-        print(" * * * * * * * * * * * * * * ")
-        print(obj.anotacoes)
-        print(" * * * * * * * * * * * * * * ")
         
         return render_template("contrato-form.html", form=form, obj=obj, resps=resps, data=data)
 
 
 @app.route("/contrato/add", methods=['GET', 'POST'])
 def contrato_add():
+    verifica_login()
     obj = Contrato()
     obj.data = date.today()
     resps = Responsavel.query.order_by('nome')
@@ -233,20 +248,24 @@ def contrato_add():
         db.session.add(obj)
         db.session.commit()
         obj.create_prestacoes(obj.valor)
+        return redirect(url_for("contrato_list"))
+    else:
+        form = ContratoForm()
+        data = display_data(obj.data)
+        return render_template("contrato-form.html", form=form, obj=obj, resps=resps)
 
-    form = ContratoForm()
-    data = display_data(obj.data)
-    return render_template("contrato-form.html", form=form, obj=obj, resps=resps)
 
 #########################################
 ##  Prestações
 #########################################
 @app.route("/prestacao/list/<int:cid>", methods=['GET'])
 def prestacao_list(cid=0):
+    verifica_login()
     obj = Contrato.query.get(cid)
     prests = obj.prestacoes().all()
     
     return render_template("prestacao-list.html", obj=obj, prests=prests)
+
 
 def form_to_prestacao(form, obj):
     obj.vencimento = form['vencimento']
@@ -263,6 +282,7 @@ def form_to_prestacao(form, obj):
 
 @app.route("/prestacao/edit/<int:pid>", methods=['GET', 'POST'])
 def prestacao_edit(pid=0):
+    verifica_login()
     obj = Prestacao.query.get(pid)
     
     if request.method == 'POST':
@@ -291,6 +311,7 @@ def prestacao_edit(pid=0):
 
 @app.route("/pagamentos/list/<int:cid>", methods=['GET'])
 def pagamentos_list(cid=0):
+    verifica_login()
     obj = Contrato.query.get(cid)
     prests = obj.prestacoes().all()
     
@@ -299,6 +320,7 @@ def pagamentos_list(cid=0):
 
 @app.route("/prestacao/naoestudou/<int:pid>", methods=['GET'])
 def prestacao_naoestudou(pid=0):
+    verifica_login()
     obj = Prestacao.query.get(pid)
     obj.status = "N"
     db.session.commit()
@@ -307,6 +329,7 @@ def prestacao_naoestudou(pid=0):
 
 @app.route("/prestacao/reabre/<int:pid>", methods=['GET'])
 def prestacao_reabre(pid=0):
+    verifica_login()
     obj = Prestacao.query.get(pid)
     obj.status = "A"
     db.session.commit()
@@ -315,6 +338,7 @@ def prestacao_reabre(pid=0):
 
 @app.route("/prestacao/desistiu/<int:pid>", methods=['GET'])
 def prestacao_desistiu(pid=0):
+    verifica_login()
     obj = Prestacao.query.get(pid)
     obj.status = "D"
     db.session.commit()
@@ -324,6 +348,7 @@ def prestacao_desistiu(pid=0):
 
 @app.route("/prestacao/pagamento/<int:pid>", methods=['GET', 'POST'])
 def pagamento_prestacao(pid=0):
+    verifica_login()
     obj = Prestacao.query.get(pid)
     
     if request.method == 'POST':
@@ -367,6 +392,7 @@ def impressao_carnets(cid=0):
     #https://codepen.io/rafaelcastrocouto/pen/LFAes
     #https://pt.stackoverflow.com/questions/149014/como-imprimir-p%C3%A1ginas-em-a4-utilizando-css
     #http://jsfiddle.net/2wk6Q/1/
+    verifica_login()
     obj = Contrato.query.get(cid)
     prests = obj.prestacoes().all()
     
@@ -375,14 +401,42 @@ def impressao_carnets(cid=0):
 
 @app.route("/impressao/contrato/<int:cid>", methods=['GET'])
 def impressao_contrato(cid=0):
+    verifica_login()
     obj = Contrato.query.get(cid)
     
     return render_template("impressao-contrato.html", obj=obj)
 
+
+@app.route("/configuracao", methods=['GET'])
+def configuracao():
+    verifica_login()
+    return render_template("configuracao.html")
+
+
+import shutil 
+from datetime import datetime
+@app.route("/ferramenta/backup")
+def backup():
+    verifica_login()
+    import os
+    bk_name = 'app/database_%Y%m%d%H%M%S.db.bk'
+    shutil.copy('app/database.db', datetime.today().strftime(bk_name))
+    flash("Operação realizada com sucesso.")
+    #send_from_directory('app', 'database.db', as_attachment=True)
+    return render_template("mensagem.html")
+
+
 @app.route("/init")
 def init():
+    verifica_login()
     db.create_all();
-    
+    return "<h1>Pronto</h1>"
+
+
+def init2():
+    verifica_login()
+    db.create_all();
+
     r = Responsavel('Felipe Cavalcante', '111.222.333-44', '12345')
     r.telefone = '99999-9999'
     r.email = 'felipe@ufca'

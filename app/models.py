@@ -27,6 +27,13 @@ class Responsavel(db.Model):
    
     
 class Contrato(db.Model):
+    FORMAS = (
+        ('E', 'Espécie'),
+        ('C', 'Cheque'),
+        ('B', 'Boleto'),
+        ('T', 'Cartão'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     aluno = db.Column(db.String(128))
     responsavel_id = db.Column(db.Integer, db.ForeignKey("responsavel.id"))
@@ -35,7 +42,7 @@ class Contrato(db.Model):
     ano = db.Column(db.Integer, nullable=False)
     vencimento = db.Column(db.Integer, nullable=False, default=5)
     data = db.Column(db.Date, nullable=True)
-    carnet_entregue = db.Column(db.Boolean, nullable=False, default=False)
+    forma_de_pgto = db.Column(db.String(1), nullable=True)
     anotacoes = db.Column(db.Text, nullable=True, default='')
     valor = db.Column(db.Float, nullable=False, default=0.0)
     
@@ -49,7 +56,13 @@ class Contrato(db.Model):
         self.vencimento = 5
         self.carnet_entregue = False
 
-
+    def numero(self):
+        if self.id is None: # No caso da criação de um novo contrato.
+            return ''
+        else:
+            return "%s%04d" % (self.ano, self.id) 
+        
+        
     def responsavel(self):
         return Responsavel.query.get(self.responsavel_id)
         
@@ -65,7 +78,10 @@ class Contrato(db.Model):
             p.mes = mes
             p.valor = valor;
             p.vencimento = date(self.ano, mes, self.vencimento)
-            p.status = 'A'
+            if p.vencimento < date.today():
+                p.status = 'N'
+            else:
+                p.status = 'A'
             db.session.add(p)
             
         db.session.commit()
@@ -100,6 +116,8 @@ class Prestacao(db.Model):
     FORMAS = (
         ('E', 'Espécie'),
         ('C', 'Cheque'),
+        ('B', 'Boleto'),
+        ('T', 'Cartão'),
     )
     
     STATUS = (
@@ -123,6 +141,7 @@ class Prestacao(db.Model):
     forma_de_pgto = db.Column(db.String(1), nullable=True)
     cheque_numero = db.Column(db.String(10), nullable=True)
     cheque_data = db.Column(db.Date, nullable=True)
+    
     
     def contrato(self):
         return Contrato.query.get(self.contrato_id)

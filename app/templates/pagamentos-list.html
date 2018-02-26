@@ -57,11 +57,11 @@
   </div>
 </div>
 
-<div class="panel panel-primary col-lg-12">
+<div class="col-lg-12">
   <!-- Default panel contents -->
   
-  <div class="panel-heading">Prestações </div>
-  <div class="panel-body">
+  <h3>Prestações </h3>
+  <div class="">
 
 
 </div><!-- Row-->
@@ -89,9 +89,9 @@
 {% if p.status == 'N' %}<img src="{{url_for('static', filename='img/naoestudou.png')}}" title="Não estudou">{%endif%}
 </td>
 <td><a href="/prestacao/pagamento/{{p.id}}">{{p.messtr()}}</a></td>
-<td>{{p.vencimento.strftime('%d-%m-%Y')}}</td>
+<td>{{p.vencimento.strftime('%d/%m/%Y')}}</td>
 <td>{{p.valorstr()}}</td>
-<td>{% if p.data_pgto %}{{p.data_pgto.strftime('%d-%m-%Y')}}{%else%}---{%endif%}</td>
+<td>{% if p.data_pgto %}{{p.data_pgto.strftime('%d/%m/%Y')}}{%else%}---{%endif%}</td>
 <td>{% if p.valor_pago > 0 %}{{p.valor_pago}}{%else%}---{%endif%}</td>
 <td>{% if p.forma_de_pgto  %}{{p.forma_de_pgto_str()}}{%else%}---{%endif%}</td>
 <td>{% if p.cheque_numero  %}{{p.cheque_numero}}{%else%}---{%endif%}</td>
