@@ -5,8 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://root:root@localhost/wfin'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:wfin2018@localhost/wfindb'
 
 db = SQLAlchemy(app)
 
